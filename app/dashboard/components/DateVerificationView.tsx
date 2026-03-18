@@ -4,11 +4,13 @@ import React from 'react';
 
 interface DistrictVerification {
   district: string;
-  forecastHeavy: boolean;
-  forecastRainfall: number | null;
-  observedHeavy: boolean;
-  observedRainfall: number;
-  result: 'Hit' | 'Miss' | 'False Alarm' | 'Correct Negative';
+  date: string;
+  forecastCode: number | null;
+  forecastClassification: string;
+  realisedRainfall: number | null;
+  realisedClassification: string;
+  match: boolean;
+  type: 'Correct' | 'False Alarm' | 'Missed Event' | 'Correct Non-Event';
 }
 
 interface TableStatistics {
@@ -137,16 +139,19 @@ export default function DateVerificationView({
                   District
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Date
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Forecast
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Forecast Code
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Observed
+                  Realised
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Rainfall (mm)
+                  Realised Rainfall (mm)
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Result
@@ -155,34 +160,42 @@ export default function DateVerificationView({
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {data.verifications.map((verification, index) => (
-                <tr key={index} className="hover:bg-gray-50">
+                <tr key={`${verification.district}-${index}`} className="hover:bg-gray-50">
                   <td className="px-4 py-3 text-sm font-medium text-gray-900">
                     {verification.district}
                   </td>
+                  <td className="px-4 py-3 text-sm text-gray-700">
+                    {verification.date}
+                  </td>
                   <td className="px-4 py-3 text-sm">
-                    <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                      verification.forecastHeavy ? 'bg-orange-100 text-orange-800' : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      {verification.forecastHeavy ? 'Heavy' : 'Less'}
+                    <span className="font-semibold text-blue-700">
+                      {verification.forecastClassification || 'N/A'}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-700">
-                    {verification.forecastRainfall !== null ? verification.forecastRainfall.toFixed(1) : 'N/A'}
+                    {verification.forecastCode !== null ? verification.forecastCode : 'N/A'}
+                  </td>
+                  <td className="px-4 py-3 text-sm">
+                    <span className="font-semibold text-green-700">
+                      {verification.realisedClassification || 'N/A'}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700">
+                    {verification.realisedRainfall !== null && verification.realisedRainfall !== undefined
+                      ? verification.realisedRainfall.toFixed(1)
+                      : 'N/A'}
                   </td>
                   <td className="px-4 py-3 text-sm">
                     <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                      verification.observedHeavy ? 'bg-orange-100 text-orange-800' : 'bg-gray-100 text-gray-800'
+                      verification.type === 'Correct' ? 'bg-green-100 text-green-800' :
+                      verification.type === 'False Alarm' ? 'bg-yellow-100 text-yellow-800' :
+                      verification.type === 'Missed Event' ? 'bg-red-100 text-red-800' :
+                      'bg-blue-100 text-blue-800'
                     }`}>
-                      {verification.observedHeavy ? 'Heavy' : 'Less'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-sm font-semibold text-gray-900">
-                    {verification.observedRainfall.toFixed(1)}
-                  </td>
-                  <td className="px-4 py-3 text-sm">
-                    <span className={`px-2 py-1 rounded text-xs font-semibold flex items-center gap-1 w-fit ${getResultColor(verification.result)}`}>
-                      <span>{getResultIcon(verification.result)}</span>
-                      <span>{verification.result}</span>
+                      {verification.type === 'Correct' ? '✓ Correct' :
+                       verification.type === 'False Alarm' ? '⚠ False Alarm' :
+                       verification.type === 'Missed Event' ? '✗ Missed' :
+                       '○ Correct Non-Event'}
                     </span>
                   </td>
                 </tr>

@@ -21,6 +21,7 @@ export default function LeadTimeVerificationTab() {
   const [overallAccuracy, setOverallAccuracy] = useState<number | null>(null);
   const [selectedYear, setSelectedYear] = useState(2025);
   const [selectedMonth, setSelectedMonth] = useState(6);
+  const [availableMonths, setAvailableMonths] = useState<Array<{year: number, month: number, label: string}>>([]);
 
   // Check for existing data on mount
   useEffect(() => {
@@ -31,6 +32,8 @@ export default function LeadTimeVerificationTab() {
   useEffect(() => {
     if (hasData) {
       loadAvailableDates();
+      setSelectedDate(null); // Clear selected date when month changes
+      setVerificationData(null);
     }
   }, [hasData, selectedYear, selectedMonth]);
 
@@ -42,6 +45,39 @@ export default function LeadTimeVerificationTab() {
 
       if (result.success && result.hasData) {
         setHasData(true);
+        
+        // Extract available months from metadata
+        const months: Array<{year: number, month: number, label: string}> = [];
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+        
+        if (result.metadata?.uploads?.forecast) {
+          result.metadata.uploads.forecast.forEach((monthKey: string) => {
+            const [year, month] = monthKey.split('-').map(Number);
+            if (year && month) {
+              months.push({
+                year,
+                month,
+                label: `${monthNames[month - 1]} ${year}`
+              });
+            }
+          });
+        }
+        
+        // Sort by year and month descending (most recent first)
+        months.sort((a, b) => {
+          if (a.year !== b.year) return b.year - a.year;
+          return b.month - a.month;
+        });
+        
+        setAvailableMonths(months);
+        
+        // Set to most recent month
+        if (months.length > 0) {
+          setSelectedYear(months[0].year);
+          setSelectedMonth(months[0].month);
+        }
+        
         toast.success('Data loaded from storage');
       } else {
         setHasData(false);
@@ -73,6 +109,11 @@ export default function LeadTimeVerificationTab() {
       console.error('Dates load error:', error);
       toast.error('Failed to load dates');
     }
+  };
+
+  const handleMonthChange = (year: number, month: number) => {
+    setSelectedYear(year);
+    setSelectedMonth(month);
   };
 
   const handleDateSelect = async (date: string) => {
@@ -180,10 +221,33 @@ export default function LeadTimeVerificationTab() {
           Select a date to view detailed verification results. Data is loaded on-demand and cached for fast access.
         </p>
         
+        {/* Month/Year Selector */}
+        {availableMonths.length > 0 && (
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Select Month
+            </label>
+            <select
+              value={`${selectedYear}-${selectedMonth}`}
+              onChange={(e) => {
+                const [year, month] = e.target.value.split('-').map(Number);
+                handleMonthChange(year, month);
+              }}
+              className="block w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+            >
+              {availableMonths.map(({ year, month, label }) => (
+                <option key={`${year}-${month}`} value={`${year}-${month}`}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+        
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <h3 className="font-semibold text-blue-900 mb-2">✓ Data Available</h3>
           <p className="text-sm text-blue-700">
-            {availableDates.length} dates available for {selectedMonth === 6 ? 'June' : 'May'} {selectedYear}.
+            {availableDates.length} dates available for {availableMonths.find(m => m.year === selectedYear && m.month === selectedMonth)?.label || `${selectedYear}-${selectedMonth.toString().padStart(2, '0')}`}.
             Click any date to view verification results.
           </p>
         </div>

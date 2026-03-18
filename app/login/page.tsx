@@ -15,9 +15,8 @@ export default function LoginPage() {
 
     // Fixed credentials check
     if (credentials.username === 'imd_mumbai' && credentials.password === 'imd@mumbai') {
-      // Set authentication in localStorage
-      localStorage.setItem('imd_authenticated', 'true');
-      localStorage.setItem('imd_user', 'imd_mumbai');
+      // Set authentication cookie
+      document.cookie = 'auth_token=authenticated; path=/; max-age=86400'; // 24 hours
       toast.success('Login successful');
       router.push('/dashboard');
     } else {

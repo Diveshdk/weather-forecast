@@ -1,53 +1,118 @@
-# IMD Rainfall Forecast Data Format
+# Sample Excel Files for IMD Upload System
 
-## File Upload Requirements
+## 📁 Files Created
 
-### 1. Warning (Forecast) Data Format
+1. **sample_warning_june_2025.xlsx** - Sample Warning data
+2. **sample_realised_june_2025.xlsx** - Sample Realised (Observed) data
 
-**File Types Accepted:** `.csv` or `.xlsx`
+## 📊 File Format
 
-**Required Columns:**
-- `District`: Name of the district
-- `Day1_Date`: First day forecast date (YYYY-MM-DD)
-- `Day1_Rainfall_mm`: Rainfall prediction for day 1 in millimeters
-- `Day2_Date`: Second day forecast date (YYYY-MM-DD)
-- `Day2_Rainfall_mm`: Rainfall prediction for day 2 in millimeters
-- `Day3_Date`: Third day forecast date (YYYY-MM-DD)
-- `Day3_Rainfall_mm`: Rainfall prediction for day 3 in millimeters
-- `Day4_Date`: Fourth day forecast date (YYYY-MM-DD)
-- `Day4_Rainfall_mm`: Rainfall prediction for day 4 in millimeters
-- `Day5_Date`: Fifth day forecast date (YYYY-MM-DD)
-- `Day5_Rainfall_mm`: Rainfall prediction for day 5 in millimeters
+Both files follow the same structure:
 
-**Sample File:** `sample_warning_data.csv`
+```
+District         | 1    | 2    | 3    | ... | 30
+PALGHAR         | 5    | 0    | 7    | ... | 0
+THANE           | 0    | 5    | 0    | ... | 8
+MUMBAI          | 7    | 0    | 5    | ... | 0
+...
+```
 
-### 2. Realised (Observed) Data Format
+- **Column 1**: District name
+- **Columns 2-31**: Day numbers (1-30 for June)
 
-**File Types Accepted:** `.csv` or `.xlsx`
+## 🏛️ Districts Included (28 total)
 
-**Required Columns:**
-- `District`: Name of the district (must match district names in warning data)
-- `Date`: Date of observation (YYYY-MM-DD)
-- `Rainfall_mm`: Actual rainfall recorded in millimeters
+All Maharashtra districts from your system:
+- PALGHAR, THANE, MUMBAI, RAIGAD, RATNAGIRI, SINDHUDURG
+- DHULE, NANDURBAR, JALGAON, NASIK, Ghats of NASIK
+- AHMEDNAGAR, PUNE, Ghats of PUNE
+- Ghats of KOLHAPUR, KOLHAPUR, SATARA, SOUTH SATARA, SANGLI
+- SHOLAPUR, CHHATRAPATI SAMBHAJINAGAR, JALNA, PARBHANI
+- BEED, HINGOLI, NANDED, LATUR, DHARASHIV
 
-**Sample File:** `sample_realised_data.csv`
+## 📤 How to Upload
 
-## Important Notes
+### Warning Data:
+1. Go to Dashboard → **Upload Data (New)** tab
+2. Click **Upload Warning** tab
+3. Select `sample_warning_june_2025.xlsx`
+4. Set:
+   - **Year**: 2025
+   - **Month**: June
+   - **Lead Day**: D1 (or D2, D3, D4, D5)
+5. Click **Upload Data**
 
-1. **District Names:** Must be consistent between warning and realised data files
-2. **Date Format:** Always use YYYY-MM-DD format (e.g., 2024-12-18)
-3. **Rainfall Values:** Enter numerical values in millimeters (e.g., 65.4, 12.8)
-4. **Classification:** System automatically classifies rainfall as:
-   - **Y (Significant):** > 64.5 mm
-   - **N (Not Significant):** ≤ 64.5 mm
+### Realised Data:
+1. Go to Dashboard → **Upload Data (New)** tab
+2. Click **Upload Realised** tab
+3. Select `sample_realised_june_2025.xlsx`
+4. Set:
+   - **Year**: 2025
+   - **Month**: June
+5. Click **Upload Data**
 
-## Maharashtra Districts Covered
+## 📋 Data Details
 
-Mumbai City, Mumbai Suburban, Thane, Raigad, Palghar, Nashik, Ahmednagar, Pune, Satara, Sangli, Kolhapur, Ratnagiri, Sindhudurg, Dhule, Nandurbar, Jalgaon, Aurangabad, Jalna, Beed, Latur, Osmanabad, Solapur, Akola, Amravati, Buldhana, Washim, Yavatmal, Wardha, Nagpur, Bhandara, Gondia, Chandrapur, Gadchiroli, Nanded, Hingoli, Parbhani
+### Warning File:
+- **Warning Codes**: 0, 5, 7, 8, 10, 12
+  - 0 = No warning
+  - 5 = Light rainfall warning
+  - 7 = Moderate rainfall warning
+  - 8 = Heavy rainfall warning
+  - 10 = Very heavy rainfall warning
+  - 12 = Extremely heavy rainfall warning
 
-## Workflow
+### Realised File:
+- **Rainfall Values**: In millimeters (mm)
+- **Range**: 0 to 125.3 mm
+- **Examples**: 0, 5.5, 12.3, 25.8, 45.2, 67.8, 89.5, 125.3
 
-1. **Daily Upload:** Upload 5-day forecast (warning) data every day
-2. **Previous Day Upload:** Upload previous day's realised (observed) data
-3. **Analysis:** System compares warning vs realised data for accuracy
-4. **Reports:** Generate daily verification reports for completed days only
+## 🔄 Testing Multiple Lead Days
+
+To test the full lead-day system, upload the **same warning file** 5 times with different lead days:
+
+1. Upload with Lead Day = **D1**
+2. Upload with Lead Day = **D2**
+3. Upload with Lead Day = **D3**
+4. Upload with Lead Day = **D4**
+5. Upload with Lead Day = **D5**
+
+This will create separate files for each lead day in the storage structure:
+```
+/data/warning/2025/06/
+  ├── D1/
+  ├── D2/
+  ├── D3/
+  ├── D4/
+  └── D5/
+```
+
+## ✅ Expected Results
+
+After uploading both files, you should see:
+- 30 JSON files in `/data/warning/2025/06/D1/` (01.json to 30.json)
+- 30 JSON files in `/data/realised/2025/06/` (01.json to 30.json)
+- Upload summary showing 30 days processed
+- No errors (all districts match the expected format)
+
+## 🎯 Next Steps
+
+1. Upload the sample files using the instructions above
+2. Navigate to the Analysis or Verification tabs
+3. Select June 2025 as the date range
+4. Run verification to see how the system compares warnings vs realised data
+
+## 📝 Creating Your Own Files
+
+To create your own Excel files:
+1. Use the same format (District | 1 | 2 | 3 | ... | 30/31)
+2. Include all districts you want to analyze
+3. For Warning: Use integer warning codes
+4. For Realised: Use decimal rainfall values in mm
+5. Ensure the number of day columns matches the month (28-31)
+
+---
+
+**Generated**: January 2026  
+**Month**: June 2025 (30 days)  
+**Districts**: 28 Maharashtra districts

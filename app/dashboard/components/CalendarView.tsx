@@ -48,10 +48,14 @@ export default function CalendarView({
   const calendarDays = generateCalendarDays();
   
   // Get day of week for first day of month (0 = Sunday, 1 = Monday, etc.)
-  const firstDayOfWeek = new Date(year, month - 1, 1).getDay();
+  // Ensure year and month are valid numbers
+  const validYear = Number.isFinite(year) ? year : new Date().getFullYear();
+  const validMonth = Number.isFinite(month) && month >= 1 && month <= 12 ? month : 1;
+  const firstDayOfWeek = new Date(validYear, validMonth - 1, 1).getDay();
   
-  // Create empty cells for days before month starts
-  const emptyCells = Array(firstDayOfWeek).fill(null);
+  // Create empty cells for days before month starts (ensure valid array length)
+  const emptyCellCount = Number.isFinite(firstDayOfWeek) && firstDayOfWeek >= 0 ? firstDayOfWeek : 0;
+  const emptyCells = Array(emptyCellCount).fill(null);
 
   const getDateClassName = (day: CalendarDay) => {
     const baseClasses = "aspect-square flex items-center justify-center rounded-lg text-sm font-medium transition-all cursor-pointer";
