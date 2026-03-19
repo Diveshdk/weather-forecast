@@ -148,6 +148,11 @@ export async function compareForDate(
     const match = classificationsMatch(forecastClass, realisedClass);
     
     let type: 'Correct' | 'False Alarm' | 'Missed Event' | 'Correct Non-Event';
+    
+    // In dual mode, match is binary (L vs H).
+    // In multi mode, match is exact (H vs H, VH vs VH, etc.)
+    // For POD/FAR/CSI metrics, we usually treat any "Heavy" as a hit 
+    // unless we are doing specific category verification.
     if (match) {
       type = 'Correct';
     } else {
@@ -155,7 +160,11 @@ export async function compareForDate(
       const forecastHeavy = forecastClass !== 'L';
       const realisedHeavy = realisedClass !== 'L';
       
-      if (forecastHeavy && !realisedHeavy) {
+      if (forecastHeavy && realisedHeavy) {
+        // Both are some kind of Heavy (e.g. H and VH), so it's a Hit for binary verification
+        // but not an exact match. We'll call it Correct to stay in binary Hit category.
+        type = 'Correct';
+      } else if (forecastHeavy && !realisedHeavy) {
         type = 'False Alarm';
       } else if (!forecastHeavy && realisedHeavy) {
         type = 'Missed Event';
