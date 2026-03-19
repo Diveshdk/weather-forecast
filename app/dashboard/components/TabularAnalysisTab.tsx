@@ -188,22 +188,22 @@ export default function TabularAnalysisTab() {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky left-0 bg-gray-50">
+              <th className="px-6 py-3 text-left text-xs font-bold text-black uppercase tracking-wider sticky left-0 bg-gray-50">
                 District
               </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-center text-xs font-bold text-black uppercase tracking-wider">
                 Day 1
               </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-center text-xs font-bold text-black uppercase tracking-wider">
                 Day 2
               </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-center text-xs font-bold text-black uppercase tracking-wider">
                 Day 3
               </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-center text-xs font-bold text-black uppercase tracking-wider">
                 Day 4
               </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-center text-xs font-bold text-black uppercase tracking-wider">
                 Day 5
               </th>
             </tr>
@@ -213,22 +213,22 @@ export default function TabularAnalysisTab() {
               .sort(([a], [b]) => a.localeCompare(b))
               .map(([district, days]) => (
                 <tr key={district} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 sticky left-0 bg-white">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-black sticky left-0 bg-white">
                     {district}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900 font-semibold">
                     {formatValue(days.D1, metricName)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900 font-semibold">
                     {formatValue(days.D2, metricName)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900 font-semibold">
                     {formatValue(days.D3, metricName)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900 font-semibold">
                     {formatValue(days.D4, metricName)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900 font-semibold">
                     {formatValue(days.D5, metricName)}
                   </td>
                 </tr>
@@ -315,18 +315,18 @@ export default function TabularAnalysisTab() {
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
               <div>
-                <span className="text-gray-600">Date Range:</span>
-                <span className="ml-2 font-semibold text-gray-900">
+                <span className="text-black font-bold">Date Range:</span>
+                <span className="ml-2 font-black text-gray-900">
                   {format(new Date(startDate), 'MMM dd')} - {format(new Date(endDate), 'MMM dd, yyyy')}
                 </span>
               </div>
               <div>
-                <span className="text-gray-600">Threshold:</span>
-                <span className="ml-2 font-semibold text-gray-900">{threshold}mm</span>
+                <span className="text-black font-bold">Threshold:</span>
+                <span className="ml-2 font-black text-gray-900">{threshold}mm</span>
               </div>
               <div>
-                <span className="text-gray-600">Districts:</span>
-                <span className="ml-2 font-semibold text-gray-900">
+                <span className="text-black font-bold">Districts:</span>
+                <span className="ml-2 font-black text-gray-900">
                   {Object.keys(allMetricsData.correctness).length}
                 </span>
               </div>

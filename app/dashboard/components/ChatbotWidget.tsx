@@ -215,7 +215,7 @@ export default function ChatbotWidget() {
               {/* Smart suggestions */}
               {msg.role === 'assistant' && msg.suggestions && msg.suggestions.length > 0 && (
                 <div className="mt-2 ml-9 flex flex-col gap-1.5">
-                  <p className="text-xs text-gray-400 font-medium">You may also ask:</p>
+                  <p className="text-xs text-black font-bold">You may also ask:</p>
                   {msg.suggestions.map((s, i) => (
                     <button
                       key={i}
@@ -249,7 +249,7 @@ export default function ChatbotWidget() {
           {/* Example queries (shown when only welcome message) */}
           {messages.length === 1 && messages[0].id === 'welcome' && !isLoading && (
             <div className="space-y-2 pt-1">
-              <p className="text-xs text-gray-400 font-medium px-1">✨ Try asking:</p>
+              <p className="text-xs text-black font-bold px-1">✨ Try asking:</p>
               <div className="flex flex-wrap gap-1.5">
                 {EXAMPLE_QUERIES.map((q, i) => (
                   <button
@@ -278,7 +278,7 @@ export default function ChatbotWidget() {
               placeholder="Ask about rainfall data or meteorology…"
               rows={1}
               disabled={isLoading}
-              className="flex-1 resize-none text-sm border border-gray-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent placeholder:text-gray-400 disabled:bg-gray-50 disabled:text-gray-400 max-h-24 overflow-y-auto"
+              className="flex-1 resize-none text-sm border-2 border-gray-400 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent placeholder:text-black placeholder:font-bold disabled:bg-gray-50 disabled:text-gray-900 max-h-24 overflow-y-auto text-black font-bold"
               style={{ lineHeight: '1.5' }}
             />
             <button

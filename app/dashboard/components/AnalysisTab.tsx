@@ -248,17 +248,17 @@ export default function AnalysisTab() {
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
           Graphical Analysis
         </h2>
-        <p className="text-gray-600 mb-6">
+        <p className="text-black font-semibold mb-6">
           Visual graph-based analysis of verification metrics
         </p>
 
         {/* Configuration Panel */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-bold text-black mb-2">
               Heavy Rainfall Threshold (mm)
             </label>
             <input
@@ -268,11 +268,11 @@ export default function AnalysisTab() {
               step="0.1"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
             />
-            <p className="text-xs text-gray-500 mt-1">Default: 64.5mm</p>
+            <p className="text-xs text-black font-bold mt-1">Default: 64.5mm</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-bold text-black mb-2">
               Start Date
             </label>
             <input
@@ -284,7 +284,7 @@ export default function AnalysisTab() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-bold text-black mb-2">
               End Date
             </label>
             <input
@@ -329,13 +329,13 @@ export default function AnalysisTab() {
         {/* Day Selector (only for day-wise mode) */}
         {analysisMode === 'day-wise' && (
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-bold text-black mb-2">
               Select Day
             </label>
             <select
               value={selectedDay}
               onChange={(e) => setSelectedDay(e.target.value)}
-              className="w-full md:w-64 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+              className="w-full md:w-64 px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black font-bold"
             >
               <option value="D1">Day 1</option>
               <option value="D2">Day 2</option>
@@ -364,28 +364,28 @@ export default function AnalysisTab() {
       {dayWiseData && analysisMode === 'day-wise' && (
         <div className="space-y-6">
           {/* Summary */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-400 rounded-lg p-6">
+            <h3 className="text-lg font-bold text-black mb-2">
               {dayWiseData.selectedDay.replace('D', 'Day ')} - District-Wise Analysis
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div>
-                <span className="text-gray-600">Selected Day:</span>
-                <span className="ml-2 font-semibold text-gray-900">{dayWiseData.selectedDay}</span>
+                <span className="text-black font-bold">Selected Day:</span>
+                <span className="ml-2 font-black text-black">{dayWiseData.selectedDay}</span>
               </div>
               <div>
-                <span className="text-gray-600">Date Range:</span>
-                <span className="ml-2 font-semibold text-gray-900">
+                <span className="text-black font-bold">Date Range:</span>
+                <span className="ml-2 font-black text-black">
                   {format(new Date(dayWiseData.start_date), 'MMM dd')} - {format(new Date(dayWiseData.end_date), 'MMM dd, yyyy')}
                 </span>
               </div>
               <div>
-                <span className="text-gray-600">Threshold:</span>
-                <span className="ml-2 font-semibold text-gray-900">{dayWiseData.threshold}mm</span>
+                <span className="text-black font-bold">Threshold:</span>
+                <span className="ml-2 font-black text-black">{dayWiseData.threshold}mm</span>
               </div>
               <div>
-                <span className="text-gray-600">Districts:</span>
-                <span className="ml-2 font-semibold text-gray-900">
+                <span className="text-black font-bold">Districts:</span>
+                <span className="ml-2 font-black text-black">
                   {Object.keys(dayWiseData.districts).length}
                 </span>
               </div>
@@ -628,9 +628,11 @@ export default function AnalysisTab() {
                     label={{ value: 'Metric Value', angle: -90, position: 'insideLeft', offset: 10 }}
                   />
                   <Tooltip
-                    formatter={(value: number, name: string) => {
-                      if (name === 'Correctness (%)') return [`${value}%`, name];
-                      return [value, name];
+                    formatter={(value: any, name?: string) => {
+                      const val = value ?? 0;
+                      const n = name ?? '';
+                      if (n === 'Correctness (%)') return [`${val}%`, n];
+                      return [val, n];
                     }}
                     content={({ active, payload, label }) => {
                       if (!active || !payload || !payload.length) return null;
@@ -638,19 +640,19 @@ export default function AnalysisTab() {
                         (d) => d.subdivision === label
                       );
                       return (
-                        <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-lg text-sm">
-                          <p className="font-semibold text-gray-800 mb-2">{item?.fullName}</p>
+                        <div className="bg-white border-2 border-black rounded-lg p-3 shadow-lg text-sm">
+                          <p className="font-bold text-black mb-2">{item?.fullName}</p>
                           {payload.map((entry: any) => (
-                            <p key={entry.name} style={{ color: entry.fill }} className="flex justify-between gap-4">
+                            <p key={entry.name} style={{ color: entry.fill }} className="flex justify-between gap-4 font-bold">
                               <span>{entry.name}:</span>
-                              <span className="font-medium">
+                              <span className="font-black">
                                 {entry.name === 'Correctness (%)'
                                   ? `${entry.value}%`
                                   : entry.value}
                               </span>
                             </p>
                           ))}
-                          {item && <p className="text-gray-400 text-xs mt-1">{item.districtCount} district(s) averaged</p>}
+                          {item && <p className="text-black font-bold text-xs mt-2">{item.districtCount} district(s) averaged</p>}
                         </div>
                       );
                     }}
@@ -732,22 +734,22 @@ export default function AnalysisTab() {
       {comparisonData && analysisMode === 'comparison' && (
         <div className="space-y-6">
           {/* Summary */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">All-Day Comparison Analysis</h3>
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-400 rounded-lg p-6">
+            <h3 className="text-lg font-bold text-black mb-2">All-Day Comparison Analysis</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
               <div>
-                <span className="text-gray-600">Date Range:</span>
-                <span className="ml-2 font-semibold text-gray-900">
+                <span className="text-black font-bold">Date Range:</span>
+                <span className="ml-2 font-black text-black">
                   {format(new Date(comparisonData.start_date), 'MMM dd')} - {format(new Date(comparisonData.end_date), 'MMM dd, yyyy')}
                 </span>
               </div>
               <div>
-                <span className="text-gray-600">Threshold:</span>
-                <span className="ml-2 font-semibold text-gray-900">{comparisonData.threshold}mm</span>
+                <span className="text-black font-bold">Threshold:</span>
+                <span className="ml-2 font-black text-black">{comparisonData.threshold}mm</span>
               </div>
               <div>
-                <span className="text-gray-600">Days Compared:</span>
-                <span className="ml-2 font-semibold text-gray-900">Day 1 to Day 5</span>
+                <span className="text-black font-bold">Days Compared:</span>
+                <span className="ml-2 font-black text-black">Day 1 to Day 5</span>
               </div>
             </div>
           </div>

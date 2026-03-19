@@ -63,12 +63,12 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <h1 className="text-xl font-semibold text-gray-900">IMD Mumbai</h1>
-              <div className="ml-4 text-sm text-gray-600">
+              <div className="ml-4 text-sm text-black font-bold">
                 Rainfall Forecast Verification Dashboard
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">Welcome, IMD Mumbai</span>
+              <span className="text-sm text-black font-bold">Welcome, IMD Mumbai</span>
               <button
                 onClick={handleLogout}
                 className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
@@ -91,7 +91,7 @@ export default function DashboardPage() {
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === tab
                     ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    : 'border-transparent text-black font-bold hover:text-blue-700 hover:border-gray-300'
                 }`}
               >
                 {tab === 'upload' && 'Upload Data'}

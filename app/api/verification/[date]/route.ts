@@ -44,14 +44,13 @@ export async function GET(
       const leadDay = leadDays[i];
       const leadDayName = `day${i + 1}`;
       
-      // Calculate warning date: selected date - i days
-      const warningDate = new Date(year, month - 1, day);
-      warningDate.setDate(warningDate.getDate() - i);
-      const warningYear = warningDate.getFullYear();
-      const warningMonth = warningDate.getMonth() + 1;
-      const warningDay = warningDate.getDate();
-      
-      const comparisons = await compareForDate(warningYear, warningMonth, warningDay, leadDay, year, month, day);
+  // WARNING SOURCE: use the SELECTED DATE for all leadDays (D1..D5)
+  // i.e., load from data/warning/<leadDay>/<selectedDate>
+  const warningYear = year;
+  const warningMonth = month;
+  const warningDay = day;
+
+  const comparisons = await compareForDate(warningYear, warningMonth, warningDay, leadDay, year, month, day);
       const stats = calculateAccuracy(comparisons);
       
       // Format verifications for UI - use new comparison structure
@@ -86,14 +85,12 @@ export async function GET(
     for (let i = 0; i < leadDays.length; i++) {
       const leadDay = leadDays[i];
       
-      // Calculate warning date: selected date - i days
-      const warningDate = new Date(year, month - 1, day);
-      warningDate.setDate(warningDate.getDate() - i);
-      const warningYear = warningDate.getFullYear();
-      const warningMonth = warningDate.getMonth() + 1;
-      const warningDay = warningDate.getDate();
-      
-      const comparisons = await compareForDate(warningYear, warningMonth, warningDay, leadDay, year, month, day);
+  // For overall stats also load warnings from the SELECTED DATE for each leadDay
+  const warningYear = year;
+  const warningMonth = month;
+  const warningDay = day;
+
+  const comparisons = await compareForDate(warningYear, warningMonth, warningDay, leadDay, year, month, day);
       allComparisons.push(...comparisons);
     }
     const overallStats = calculateAccuracy(allComparisons);

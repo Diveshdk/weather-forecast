@@ -13,6 +13,8 @@ interface DailyDataFile {
 interface DistrictRainfall {
   district: string;
   rainfall: number;
+  maxRainfallDate?: string;
+  maxRainfallValue?: number;
 }
 
 export async function GET(request: NextRequest) {
@@ -136,22 +138,35 @@ async function getMonthlyRainfall(monthStr: string): Promise<DistrictRainfall[]>
       return [];
     }
 
-    // Map to store max rainfall per district
-    const districtMaxRainfall = new Map<string, number>();
+    // Map to store accumulated rainfall and max rainfall tracking per district
+    const districtStats = new Map<string, { total: number; maxVal: number; maxDate: string }>();
 
     // Read all daily files for the month
     for (const file of jsonFiles) {
       const filePath = path.join(monthDir, file);
+      const day = file.replace('.json', '');
+      const dateStr = `${year}-${month}-${day}`;
+
       try {
         const content = fs.readFileSync(filePath, 'utf-8');
         const data: DailyDataFile = JSON.parse(content);
 
-        // Update max rainfall for each district
+        // Update stats for each district
         for (const [district, rainfall] of Object.entries(data.districts)) {
           if (rainfall !== null && !isNaN(rainfall)) {
             const normalizedDistrict = normalizeDistrictName(district);
-            const currentMax = districtMaxRainfall.get(normalizedDistrict) || 0;
-            districtMaxRainfall.set(normalizedDistrict, Math.max(currentMax, rainfall));
+            
+            if (!districtStats.has(normalizedDistrict)) {
+              districtStats.set(normalizedDistrict, { total: 0, maxVal: -1, maxDate: '' });
+            }
+            
+            const stats = districtStats.get(normalizedDistrict)!;
+            stats.total += rainfall;
+            
+            if (rainfall > stats.maxVal) {
+              stats.maxVal = rainfall;
+              stats.maxDate = dateStr;
+            }
           }
         }
       } catch (error) {
@@ -162,17 +177,21 @@ async function getMonthlyRainfall(monthStr: string): Promise<DistrictRainfall[]>
 
     // Convert to result array
     const result: DistrictRainfall[] = [];
-    for (const [district, maxRainfall] of districtMaxRainfall.entries()) {
+    for (const [district, stats] of districtStats.entries()) {
       result.push({
         district,
-        rainfall: parseFloat(maxRainfall.toFixed(1))
+        rainfall: parseFloat(stats.total.toFixed(1)),
+        maxRainfallDate: stats.maxDate,
+        maxRainfallValue: parseFloat(stats.maxVal.toFixed(1))
       });
 
       // Handle Mumbai special case
       if (district === 'MUMBAI') {
         result.push({
           district: 'MUMBAI SUBURBAN',
-          rainfall: parseFloat(maxRainfall.toFixed(1))
+          rainfall: parseFloat(stats.total.toFixed(1)),
+          maxRainfallDate: stats.maxDate,
+          maxRainfallValue: parseFloat(stats.maxVal.toFixed(1))
         });
       }
     }
