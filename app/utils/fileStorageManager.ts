@@ -19,7 +19,9 @@ const DATES_INDEX_KEY = 'rainfall_available_dates';
 
 // Helper to check if KV is configured
 const isKVConfigured = () => {
-  return !!(process.env.KV_REST_API_URL || process.env.STORE_KV_REST_API_URL);
+  const url = (process.env.KV_REST_API_URL || process.env.STORE_KV_REST_API_URL)?.trim();
+  const token = (process.env.KV_REST_API_TOKEN || process.env.STORE_KV_REST_API_TOKEN)?.trim();
+  return !!(url && token);
 };
 
 export class FileStorageManager {

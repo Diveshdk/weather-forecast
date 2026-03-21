@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { toast } from 'react-hot-toast';
 import { useRainfallConfig } from '@/app/utils/useRainfallConfig';
-import { MONTHLY_RAINFALL_CATEGORIES } from '@/app/utils/rainfallColors';
+import { MONTHLY_RAINFALL_CATEGORIES, RAINFALL_CATEGORIES } from '@/app/utils/rainfallColors';
 
 // Dynamically import the map component to avoid SSR issues with Leaflet
 const MapVisualization = dynamic(() => import('@/app/dashboard/components/MapVisualization'), {
@@ -189,30 +189,17 @@ export default function MapAnalysisTab() {
         );
       }
 
-      // Fixed 100mm bands for daily view
-      const bands = [
-        { range: '0 - 100 mm', color: '#E3F2FD' },
-        { range: '100 - 200 mm', color: '#90CAF9' },
-        { range: '200 - 300 mm', color: '#42A5F5' },
-        { range: '300 - 400 mm', color: '#1E88E5' },
-        { range: '400 - 500 mm', color: '#1565C0' },
-        { range: '500 - 600 mm', color: '#FDD835' },
-        { range: '600 - 700 mm', color: '#FB8C00' },
-        { range: '700 - 800 mm', color: '#E53935' },
-        { range: '800 - 900 mm', color: '#B71C1C' },
-        { range: '> 900 mm', color: '#4A148C' },
-      ];
-
       return (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded border border-gray-300 bg-[#D3D3D3]" />
-            <span className="text-xs text-gray-700 font-medium">No Data (0 mm)</span>
-          </div>
-          {bands.map((band) => (
-            <div key={band.range} className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded border border-gray-300 flex-shrink-0" style={{ backgroundColor: band.color }} />
-              <span className="text-xs text-gray-700 font-medium">{band.range}</span>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {RAINFALL_CATEGORIES.map((cat) => (
+            <div key={cat.name} className="flex items-center gap-3">
+              <div className="w-6 h-6 rounded border border-gray-300" style={{ backgroundColor: cat.color }}></div>
+              <div>
+                <div className="text-sm font-bold text-black">{cat.name}</div>
+                <div className="text-xs text-gray-900 font-semibold">
+                  {cat.max === null ? `> ${cat.min} mm` : cat.min === 0 && cat.max === 0 ? '0 mm' : `${cat.min}-${cat.max} mm`}
+                </div>
+              </div>
             </div>
           ))}
         </div>
